@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>All Orders (Chef Panel)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.7rem;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .status-waiting {
+      background-color: #fff3cd; /* Yellow */
+    }
+    .status-ready {
+      background-color: #d1ecf1; /* Blue */
+    }
+    .status-delivered {
+      background-color: #d4edda; /* Green */
+    }
+
+    .status-select {
+      padding: 0.3rem;
+    }
+
+    #searchInput {
+      margin-top: 1rem;
+      padding: 0.5rem;
+      width: 250px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧁 All Orders – Chef Panel</h1>
+
+  <!-- Simple Password Protection 123 -->
+  <div id="loginSection">
+    <label>Enter Chef Password:</label>
+    <input type="password" id="passwordInput" />
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="mainContent" class="hidden">
+    <input type="text" id="searchInput" placeholder="Search by name or ID..." />
+
+    <table id="ordersTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Pancake</th>
+          <th>Toppings</th>
+          <th>Extras</th>
+          <th>Delivery</th>
+          <th>Price (€)</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const PASSWORD = "123";
+    const ordersTableBody = document.querySelector("#ordersTable tbody");
+
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    function login() {
+      const input = document.getElementById("passwordInput").value;
+      if (input === PASSWORD) {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("mainContent").classList.remove("hidden");
+        renderOrders();
+      } else {
+        alert("Incorrect password!");
+      }
+    }
+
+    function renderOrders(filter = "") {
+      orders = JSON.parse(localStorage.getItem("orders")) || [];
+      ordersTableBody.innerHTML = "";
+
+      const sortedOrders = [...orders].sort((a, b) => {
+        if (a.status === "waiting" && b.status !== "waiting") return -1;
+        if (a.status !== "waiting" && b.status === "waiting") return 1;
+        return b.id - a.id;
+      });
+
+      sortedOrders.forEach(order => {
+        if (
+          filter &&
+          !order.customerName.toLowerCase().includes(filter.toLowerCase()) &&
+          !String(order.id).includes(filter)
+        ) return;
+
+        const tr = document.createElement("tr");
+        tr.className = `status-${order.status}`;
+
+        tr.innerHTML = `
+          <td>${order.id}</td>
+          <td>${order.customerName}</td>
+          <td>${order.selectedPancake}</td>
+          <td>${order.toppings.join(", ")}</td>
+          <td>${order.extras.join(", ")}</td>
+          <td>${order.deliveryMethod}</td>
+          <td>${order.totalPrice}</td>
+          <td>
+            <select class="status-select" onchange="updateStatus(${order.id}, this.value)">
+              <option value="waiting" ${order.status === "waiting" ? "selected" : ""}>🟡 waiting</option>
+              <option value="ready" ${order.status === "ready" ? "selected" : ""}>🔵 ready</option>
+              <option value="delivered" ${order.status === "delivered" ? "selected" : ""}>🟢 delivered</option>
+            </select>
+          </td>
+          <td>
+            <button onclick="deleteOrder(${order.id})" ${order.status !== "delivered" ? "disabled" : ""}>❌ Delete</button>
+          </td>
+        `;
+
+        ordersTableBody.appendChild(tr);
+      });
+    }
+
+    function updateStatus(id, newStatus) {
+      const index = orders.findIndex(order => order.id === id);
+      if (index !== -1) {
+        orders[index].status = newStatus;
+        localStorage.setItem("orders", JSON.stringify(orders));
+        renderOrders(document.getElementById("searchInput").value);
+      }
+    }
+
+    function deleteOrder(id) {
+      orders = orders.filter(order => order.id !== id);
+      localStorage.setItem("orders", JSON.stringify(orders));
+      renderOrders(document.getElementById("searchInput").value);
+    }
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      renderOrders(e.target.value);
+    });
+  </script>
+</body>
+</html>
+

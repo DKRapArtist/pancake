@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tilaa pannukakku</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="image-container">
+        <img src="images/pancake.jpeg" alt="Delicious pancakes" /></div>
+
+        <div id="newBox">
+  <div class="form-container">
+    <form>
+      <label for="customerName">Name:</label>
+<input type="text" id="customerName" name="customerName">
+
+      <h2 class="gold">Make Your Own Pancake</h2>
+
+    <label for="type">Choose Pancake Type:</label>
+    <select id="type">
+      <option data-price="5">Classic - 5€</option>
+      <option data-price="6">Chocolate - 6€</option>
+      <option data-price="7">Blue Berry - 7€</option>
+    </select>
+
+    
+<div>
+<h3 class="gold">Choose Topping (1€ / kpl):</h3>
+<label
+><input type="checkbox" class="topping" data-price="1" /> Peanuts</label>
+<label
+><input type="checkbox" class="topping" data-price="1"/> Banana</label>
+<label
+><input type="checkbox" class="topping" data-price="1" /> Syrup
+</label>
+
+<h3 class="gold">Choose Extra:</h3>
+<label
+><input type="checkbox" class="extra" data-price="2" /> Whipped Cream -
+2€</label>
+<label
+><input type="checkbox" class="extra" data-price="3" /> Ice Cream - 3€</label>
+<h3>Total Price: <span class="totalPrice">5€</span></h3>
+</div>
+            
+<div>
+  <h3 class="gold">Choose Delivery Method:</h3>
+  <label
+  ><input
+    type="radio"
+    name="delivery"
+    class="delivery"
+    data-price="0"
+    checked
+  />
+  Eat In</label
+>
+<label
+  ><input
+    type="radio"
+    name="delivery"
+    class="delivery"
+    data-price="0"
+  />
+  Take Away</label
+>
+<label id="deliveryBtn"><input
+    type="radio"
+    name="delivery"
+    class="delivery"
+    data-price="5"
+  />
+  Delivery (+ 5€)</label
+>
+</div>
+  
+            <h3>Total: <span class="totalPrice">5€</span></h3>
+  
+            <button type="button" id="seeOrder">Check Delivery Information</button>
+          </form>
+  
+          <div id="orderSummary">
+            <h3 class="gold">Order Summary</h3>
+            <p id="summaryText">Customer Information.</p>
+
+
+            
+</div>
+</div>
+
+</div>
+
+        </div>
+      </div>
+
+</div>
+    </form>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+<a href="orders.html" style="display:block; text-align:center; margin-top:20px;">👨‍🍳 View All Orders (Chef)</a>
